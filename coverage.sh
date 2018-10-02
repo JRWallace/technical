@@ -69,13 +69,26 @@ done
 #bedtools nuc -fi "$reference" -bed "${reference}_windows.bed" > "${reference}_windows_nuc.txt" 
 
 #print mpileup columns I want
-awk 'BEGIN {OFS="\t"} {print $1, $2, $4}' "${base_out}_mem_sorted_pileup.txt" > "${base_out}_mem_sorted_pileup_coverage_only.txt"
+#awk 'BEGIN {OFS="\t"} {print $1, $2, $4}' "${base_out}_mem_sorted_pileup.txt" > "${base_out}_mem_sorted_pileup_coverage_only.txt"
 
 #make header line for the mpileup output
-echo $'chromosome\tcoordinate\tcoverage' > "${base_out}_mem_sorted_pileup_coverage_only_header.txt"
+#echo $'chromosome\tcoordinate\tcoverage' > "${base_out}_mem_sorted_pileup_coverage_only_header.txt"
 
 #add header to the mpileup
-cat "${base_out}_mem_sorted_pileup_coverage_only_header.txt" "${base_out}_mem_sorted_pileup_coverage_only.txt" > "${base_out}_mem_sorted_pileup_coverage_only_for_plotting.txt"
+#cat "${base_out}_mem_sorted_pileup_coverage_only_header.txt" "${base_out}_mem_sorted_pileup_coverage_only.txt" > "${base_out}_mem_sorted_pileup_coverage_only_for_plotting.txt"
+
+#cat "${base_out}_mem_sorted_pileup_coverage_only_for_plotting.txt" > "${quality}_coverage.tsv"
+
+#r
+#library(ggplot2)
+#plotting_data_files<-list.files(path=".", pattern="*_mem_sorted_pileup_coverage_only_for_plotting.txt", full.names=T)
+#plotting_data<-read.table(plotting_data_files, header=TRUE)
+#p1<-ggplot(plotting_data, aes(x=coordinate, y=coverage))
+#p1+geom_line()
+#ggsave("coverage.pdf")
+#q(save="n")
+
+mv coverage.pdf "${quality}_coverage.pdf"
 
 
 
