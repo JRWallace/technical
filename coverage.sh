@@ -57,7 +57,7 @@ done
 #samtools faidx "$reference"
 
 #make windows
-bedtools makewindows -g "${reference}.fai" -w 50 -s 5 > "${reference}_windows.bed"
+bedtools makewindows -g "${reference}.fai" -w 25 -s 1 > "${reference}_windows.bed"
 
 #convert bam alignment to bed
 bedtools bamtobed -i "${base_out}_mem_sorted.bam" > "${base_out}_mem_sorted.bed"
