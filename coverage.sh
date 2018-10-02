@@ -57,16 +57,26 @@ done
 #samtools faidx "$reference"
 
 #make windows
-bedtools makewindows -g "${reference}.fai" -w 25 -s 1 > "${reference}_windows.bed"
+#bedtools makewindows -g "${reference}.fai" -w 25 -s 1 > "${reference}_windows.bed"
 
 #convert bam alignment to bed
-bedtools bamtobed -i "${base_out}_mem_sorted.bam" > "${base_out}_mem_sorted.bed"
+#bedtools bamtobed -i "${base_out}_mem_sorted.bam" > "${base_out}_mem_sorted.bed"
 
 #run bedtools coverage
-bedtools coverage -a "${reference}_windows.bed" -b "${base_out}_mem_sorted.bed" -mean > "${base_out}_mem_sorted_bedcoverage.txt"
+#bedtools coverage -a "${reference}_windows.bed" -b "${base_out}_mem_sorted.bed" -mean > "${base_out}_mem_sorted_bedcoverage.txt"
 
 #run bedtools nuc
-bedtools nuc -fi "$reference" -bed "${reference}_windows.bed" > "${reference}_windows_nuc.txt" 
+#bedtools nuc -fi "$reference" -bed "${reference}_windows.bed" > "${reference}_windows_nuc.txt" 
+
+#print mpileup columns I want
+awk 'BEGIN {OFS="\t"} {print $1, $2, $4}' "${base_out}_mem_sorted_pileup.txt" > "${base_out}_mem_sorted_pileup_coverage_only.txt"
+
+#make header line for the mpileup output
+echo $'chromosome\tcoordinate\tcoverage' > "${base_out}_mem_sorted_pileup_coverage_only_header.txt"
+
+#add header to the mpileup
+cat "${base_out}_mem_sorted_pileup_coverage_only_header.txt" "${base_out}_mem_sorted_pileup_coverage_only.txt" > "${base_out}_mem_sorted_pileup_coverage_only_for_plotting.txt"
+
 
 
 
