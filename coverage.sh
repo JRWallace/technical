@@ -31,33 +31,33 @@ done
 #trimmomatic PE -threads 8 "$forward" "$reverse" -baseout "$base_out" AVGQUAL:"$quality"
 
 #install bwa, samtools, bedtools
-conda install -c bioconda bwa
-conda install -c bioconda samtools
-conda install -c bioconda bedtools
+#conda install -c bioconda bwa
+#conda install -c bioconda samtools
+#conda install -c bioconda bedtools
 
 #make BWA index of reference
-bwa index "$reference"
+#bwa index "$reference"
 
 #align reads
-bwa mem "$reference" "${base_out}_1P" "${base_out}_2P" > "${base_out}_mem.sam"
+#bwa mem "$reference" "${base_out}_1P" "${base_out}_2P" > "${base_out}_mem.sam"
 
 #sam to bam
-samtools view -b "${base_out}_mem.sam" > "${base_out}_mem.bam"
+#samtools view -b "${base_out}_mem.sam" > "${base_out}_mem.bam"
 
 #sort bam
-samtools sort "${base_out}_mem.bam" > "${base_out}_mem_sorted.bam"
+#samtools sort "${base_out}_mem.bam" > "${base_out}_mem_sorted.bam"
 
 #index bam
-samtools index "${base_out}_mem_sorted.bam"
+#samtools index "${base_out}_mem_sorted.bam"
 
 #mpileup to get the coverage information per base
-samtools mpileup "${base_out}_mem_sorted.bam" > "${base_out}_mem_sorted_pileup.txt"
+#samtools mpileup "${base_out}_mem_sorted.bam" > "${base_out}_mem_sorted_pileup.txt"
 
 #make faidx index
-samtools faidx "$reference"
+#samtools faidx "$reference"
 
 #make windows
-bedtools makewindows -g "${reference}.fai" -w 100 -s 10 > "${reference}_windows.bed"
+bedtools makewindows -g "${reference}.fai" -w 50 -s 5 > "${reference}_windows.bed"
 
 #convert bam alignment to bed
 bedtools bamtobed -i "${base_out}_mem_sorted.bam" > "${base_out}_mem_sorted.bed"
@@ -67,6 +67,8 @@ bedtools coverage -a "${reference}_windows.bed" -b "${base_out}_mem_sorted.bed" 
 
 #run bedtools nuc
 bedtools nuc -fi "$reference" -bed "${reference}_windows.bed" > "${reference}_windows_nuc.txt" 
+
+
 
 
 
