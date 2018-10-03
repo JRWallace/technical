@@ -14,15 +14,34 @@
 
 #set the options cases -- still need to figure out how to include default behaviors and error messages for entries that are outside the expected inputs
 
-while getopts "f:r:x:q:b:" opt; do
+while getopts ":f:r:x:q:b:" opt; do
 	case "$opt" in
-		f) forward="$OPTARG";;
-		r) reverse="$OPTARG";;
-		x) reference="$OPTARG";;
-		q) quality="$OPTARG";;
-		b) base_out="$OPTARG";;	
+		f) forward="$OPTARG"
+		echo "forward read file is $OPTARG" ;;
+		r) reverse="$OPTARG"
+		echo "reverse read file is $OPTARG" ;;
+		x) reference="$OPTARG"
+		echo "reference file is $OPTARG" ;;
+		q) quality="$OPTARG"
+		echo "quality threshold is $OPTARG" ;;
+		b) base_out="$OPTARG"
+		echo "trimmomatic output base file name is $OPTARG" ;;	
+		:) echo "Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]" 
+		exit 1
+		;;
+		\?) echo "Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]" 
+		exit 1
+		;;
+		*) echo "Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]" 
+		exit 1
+		;;
 	esac
 done
+
+if [[ ! $quality =~ [0-9][0-9] ]] || [[ $quality -gt 41 ]]; then quality=0
+echo "quality value must be an integer between 0 and 41, using 0 default value"
+echo "$quality"
+fi
 
 #install trimmomatic
 #conda install -c bioconda trimmomatic
