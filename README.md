@@ -1,6 +1,6 @@
 ### Pipeline overview
 
-##### This is a pipeline to map a set of paired-end MiSeq reads to a reference genome. It requires the forward and reverse fastq files and a reference fasta file. It also requires arguments to be passed when the script is called in order to set an average read quality threshold and an output file name, both for trimmomatic. The following example would run the pipeline with SRR961514_1.fastq as the forward read, SRR961514_2.fastq as the reverse read, sequence.fasta as the reference file, a quality threshold of 30, and SRR961514 as a base file name for trimmomatic output files. The reads, reference, coverage.sh, and python_report.py should all be in the same directory.
+##### This is a pipeline to map a set of paired-end MiSeq reads to a reference genome. It requires the forward and reverse fastq files and a reference fasta file. It also requires arguments to be passed when the script is called in order to set an average read quality threshold and an output file name, both for trimmomatic. The reads, reference, coverage.sh, and python_report.py should all be in the same directory. The following example would run the pipeline with SRR961514_1.fastq as the forward read, SRR961514_2.fastq as the reverse read, sequence.fasta as the reference file, a quality threshold of 30, and SRR961514 as a base file name for trimmomatic output files. 
 
 ```
 bash coverage.sh -f SRR961514_1.fastq -r SRR961514_2.fastq -x sequence.fasta -q 30 -b SRR961514
