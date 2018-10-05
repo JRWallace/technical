@@ -39,11 +39,6 @@ fi
 #call trimmomatic
 trimmomatic PE -threads 8 "$forward" "$reverse" -baseout "$base_out" AVGQUAL:"$quality"
 
-#install bwa, samtools, bedtools
-#conda install -c bioconda bwa
-#conda install -c bioconda samtools
-#conda install -c bioconda bedtools
-
 #make BWA index of reference
 bwa index "$reference"
 
@@ -95,27 +90,25 @@ echo $'#1_usercol\t2_usercol\t3_usercol\tcoverage' > "${base_out}_mem_sorted_bed
 cat "${base_out}_mem_sorted_bedcoverage_header.txt" "${base_out}_mem_sorted_bedcoverage.txt" > "${base_out}_mem_sorted_bedcoverage_with_header.txt"
 
 python python_report.py 
-mv Report_PdfPages_Test.pdf "${quality}_Report.pdf"
+mv Report.pdf "${quality}_Report.pdf"
 
-
-#send all the outputs to a folder
+#clean up the folder
 mkdir "${quality}""_""${base_out}"
-mv "${base_out}_1P" ./"${quality}""_""${base_out}"
-mv "${base_out}_2P" ./"${quality}""_""${base_out}"
-mv "${base_out}_1U" ./"${quality}""_""${base_out}"
-mv "${base_out}_2U" ./"${quality}""_""${base_out}"
-mv "${reference}.bwt" ./"${quality}""_""${base_out}"
-mv "${reference}.pac" ./"${quality}""_""${base_out}"
-mv "${reference}.ann" ./"${quality}""_""${base_out}"
-mv "${reference}.amb" ./"${quality}""_""${base_out}"
-mv "${reference}.sa" ./"${quality}""_""${base_out}"
-mv "${reference}_windows_nuc.txt" ./"${quality}""_""${base_out}"
-mv *.sam ./"${quality}""_""${base_out}"
+rm "${base_out}_1P" 
+rm "${base_out}_2P" 
+rm "${base_out}_1U" 
+rm "${base_out}_2U" 
+rm "${reference}.bwt"
+rm "${reference}.pac" 
+rm "${reference}.ann"
+rm "${reference}.amb" 
+rm "${reference}.sa" 
+rm "${reference}_windows_nuc.txt" 
+rm *.sam 
 mv *.bam* ./"${quality}""_""${base_out}"
-mv *mem_sorted* ./"${quality}""_""${base_out}"
-rm _*windows.bed
+rm *mem_sorted* 
 rm *.fai
-
+rm *_windows.bed
 
 
 
