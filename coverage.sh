@@ -1,18 +1,6 @@
 #!/bin/bash
 
-#Download SRA toolkit
-#wget "https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.2/sratoolkit.2.9.2-mac64.tar.gz"
-
-#install it
-#tar xvzf sratoolkit.2.9.2-mac64.tar.gz
-
-#use it to download the .fastq files
-#./sratoolkit.2.9.2-mac64/bin/fastq-dump --outdir . --split-files SRR961514
-
-#download the genome fasta file from EBI
-#wget -O sequence.fasta "https://www.ebi.ac.uk/ena/data/view/K03455&display=fasta"
-
-#set the options cases -- still need to figure out how to include default behaviors and error messages for entries that are outside the expected inputs
+usage="Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]"
 
 while getopts ":f:r:x:q:b:" opt; do
 	case "$opt" in
@@ -26,29 +14,27 @@ while getopts ":f:r:x:q:b:" opt; do
 		echo "quality threshold is $OPTARG" ;;
 		b) base_out="$OPTARG"
 		echo "trimmomatic output base file name is $OPTARG" ;;
-		:) echo "Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]"
+		:) echo $usage
 		exit 1
 		;;
-		\?) echo "Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]"
-		exit 1
-		;;
-		*) echo "Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]"
+		\?) echo $usage
 		exit 1
 		;;
 	esac
 done
 
-if [[ ! $quality =~ [0-9][0-9] ]] || [[ $quality -gt 41 ]]; then quality=0
+if [[ ! $quality =~ [0-9]{1,2} ]] || [[ $quality -gt 41 ]]; then quality=0
 echo "quality value must be an integer between 0 and 41, using 0 default value"
 fi
 
-if [[ $OPTIND-1 -lt 5 ]]; then
-echo "You have not used all required arguments. Usage: [-f <fastq file of forward or 1 read>] [-r <fastq file of reverse or 2 read>] [-x <reference fasta file>] [-q <mean quality score threshold of reads to keep for mapping to reference, options are integers between 0 and 41, defaults to 0>] [-b <this is the base file name trimmomatic will use for the trimming output files>]"
-exit
+if [[ $OPTIND -lt 11 ]]; then
+echo "You have not used all required arguments. ${usage}"
 fi
-		
-#install trimmomatic
-#conda install -c bioconda trimmomatic
+
+if [[ $OPTIND -lt 11 ]]; then
+exit
+fi	
+
 
 #call trimmomatic
 trimmomatic PE -threads 8 "$forward" "$reverse" -baseout "$base_out" AVGQUAL:"$quality"
@@ -102,21 +88,34 @@ cat "${base_out}_mem_sorted_pileup_coverage_only_header.txt" "${base_out}_mem_so
 
 cat "${base_out}_mem_sorted_pileup_coverage_only_for_plotting.txt" > "${quality}_coverage.tsv"
 
-#try running the r code as a stand-alone script
-Rscript coverage_plot.r
-
-mv coverage.pdf "${quality}_coverage.pdf"
-
 #Make headers for the bedcoverage file, use same conventions as the nuc file
 echo $'#1_usercol\t2_usercol\t3_usercol\tcoverage' > "${base_out}_mem_sorted_bedcoverage_header.txt"
 
 #add the header to the bedcoverage file
 cat "${base_out}_mem_sorted_bedcoverage_header.txt" "${base_out}_mem_sorted_bedcoverage.txt" > "${base_out}_mem_sorted_bedcoverage_with_header.txt"
 
-python bed_coverage_nuc_df.py
+python python_report.py 
+mv Report_PdfPages_Test.pdf "${quality}_Report.pdf"
 
-mv bed_coverage_nuc.txt "${quality}_bed_coverage_nuc.txt"
 
-python reporting.py > "${quality}_text_report.txt"
+#send all the outputs to a folder
+mkdir "${quality}""_""${base_out}"
+mv "${base_out}_1P" ./"${quality}""_""${base_out}"
+mv "${base_out}_2P" ./"${quality}""_""${base_out}"
+mv "${base_out}_1U" ./"${quality}""_""${base_out}"
+mv "${base_out}_2U" ./"${quality}""_""${base_out}"
+mv "${reference}.bwt" ./"${quality}""_""${base_out}"
+mv "${reference}.pac" ./"${quality}""_""${base_out}"
+mv "${reference}.ann" ./"${quality}""_""${base_out}"
+mv "${reference}.amb" ./"${quality}""_""${base_out}"
+mv "${reference}.sa" ./"${quality}""_""${base_out}"
+mv "${reference}_windows_nuc.txt" ./"${quality}""_""${base_out}"
+mv *.sam ./"${quality}""_""${base_out}"
+mv *.bam* ./"${quality}""_""${base_out}"
+mv *mem_sorted* ./"${quality}""_""${base_out}"
+rm _*windows.bed
+rm *.fai
+
+
 
 
