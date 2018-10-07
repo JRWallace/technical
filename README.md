@@ -19,8 +19,7 @@ bash coverage.sh -f SRR961514_1.fastq -r SRR961514_2.fastq -x sequence.fasta -q 
 
 5. The next step is to run the python_report.py script. After it finishes, I change the file names to reflect the quality filtering that is reflected in the report. This seemed more straight forward than passing a bash variable to a python script.
 
-6. The last step of the script does a clean up of the directory. It makes a directory (named for the quality threshold and trimmomatic output file name), and puts the BAM file into that folder. I remove all of the other outputs because they are quite large, but the BAM file seems like something that is useful and should be kept.
-
+6. The last step of the script does a clean up of the directory. It makes a directory (named for the quality threshold and trimmomatic output file name) and puts the output files into that folder (except for the raw reads and the SAM file, which I remove because they are quite large.
 ### Python_report details
 1. The first part of this script imports the files using glob2, since the exact file names will change depending on the quality thresholds used.
 
@@ -30,7 +29,7 @@ bash coverage.sh -f SRR961514_1.fastq -r SRR961514_2.fastq -x sequence.fasta -q 
 
 4. The next few lines deal with formatting the dataframes. Since we are particularly interested in how nucleotide composition correlates with sequencing depth, I kept the column containing the correlation score for this variable only.
 
-5. The last part of this script generates the report.pdf and moves the outputs into a new folder named for the quality cutoff and the trimmomatic output file name. The first statement generates the plot showing coverage over the length of the reference, and the next 3 add tables for the correlation analyses. The coverage_corr column is the correlation score from the particular test that was run, and the third column references the strength of the correlation. The variables in the variable column are as follows:
+5. The last part of this script generates the report.pdf. The first statement generates the plot showing coverage over the length of the reference, and the next 3 add tables for the correlation analyses. The coverage_corr column is the correlation score from the particular test that was run, and the third column references the strength of the correlation. The variables in the variable column are as follows:
 
   - w_start: the starting position of the sliding window
   - w_end: the ending position of the sliding window
