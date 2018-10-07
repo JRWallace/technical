@@ -91,24 +91,31 @@ cat "${base_out}_mem_sorted_bedcoverage_header.txt" "${base_out}_mem_sorted_bedc
 
 python python_report.py 
 mv Report.pdf "${quality}_Report.pdf"
-
 #clean up the folder
+#make a dir
 mkdir "${quality}""_""${base_out}"
+
+#remove raw reads
 rm "${base_out}_1P" 
 rm "${base_out}_2P" 
 rm "${base_out}_1U" 
 rm "${base_out}_2U" 
-rm "${reference}.bwt"
-rm "${reference}.pac" 
-rm "${reference}.ann"
-rm "${reference}.amb" 
-rm "${reference}.sa" 
-rm "${reference}_windows_nuc.txt" 
-rm *.sam 
-mv *.bam* ./"${quality}""_""${base_out}"
-rm *mem_sorted* 
-rm *.fai
-rm *_windows.bed
 
+#remove sam file
+rm *.sam 
+
+#move files to the new dir
+mv "${reference}.bwt" ./"${quality}""_""${base_out}"
+mv "${reference}.pac" ./"${quality}""_""${base_out}"
+mv "${reference}.ann" ./"${quality}""_""${base_out}"
+mv "${reference}.amb" ./"${quality}""_""${base_out}"
+mv "${reference}.sa" ./"${quality}""_""${base_out}"
+mv "${reference}_windows_nuc.txt" ./"${quality}""_""${base_out}"
+mv *.bam* ./"${quality}""_""${base_out}"
+mv *mem_sorted* ./"${quality}""_""${base_out}"
+mv *.fai ./"${quality}""_""${base_out}"
+mv *_windows.bed ./"${quality}""_""${base_out}"
+mv *_Report.pdf ./"${quality}""_""${base_out}"
+mv *_coverage.tsv ./"${quality}""_""${base_out}"
 
 
